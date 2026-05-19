@@ -35,7 +35,7 @@
 
       <section class="card">
         <span class="pill">COROS ready</span>
-        <p class="muted" style="margin:.8rem 0 0">This version is focused on running and COROS compatibility. It uses a simple GPX export flow that works well on iPhone: open the GPX in a new tab, then use Share or Save to Files, which matches COROS import instructions.</p>
+        <p class="muted" style="margin:.8rem 0 0">This version is focused on running and COROS compatibility. It uses a standard GPX download flow, which is the simplest way to import routes into COROS from the iPhone Files app.</p>
       </section>
 
       <section class="card stack">
@@ -80,7 +80,7 @@
         <div class="actions">
           <button class="btn btn-secondary" id="findMeBtn" type="button">Use my location</button>
           <button class="btn btn-primary" id="generateBtn" type="button">Generate route</button>
-          <button class="btn btn-ghost" id="downloadBtn" type="button" disabled>Open GPX for COROS</button>
+          <button class="btn btn-ghost" id="downloadBtn" type="button" disabled>Download GPX</button>
         </div>
       </section>
 
@@ -263,13 +263,6 @@
       return `<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="Running GPX Assistant" xmlns="http://www.topografix.com/GPX/1/1">\n  <trk>\n    <name>Running Route</name>\n    <trkseg>\n${pts}\n    </trkseg>\n  </trk>\n</gpx>`;
     }
 
-    function openGpxForIphone(){
-      const dataUrl = `data:application/gpx+xml;charset=utf-8,${encodeURIComponent(state.gpxText)}`;
-      const win = window.open(dataUrl, "_blank");
-      if(!win) throw new Error("Popup blocked. Allow popups for this site and try again.");
-      setStatus("GPX opened in a new tab. Use Share or Save to Files, then open with COROS.");
-    }
-
     function downloadGpx(){
       const filename = 'running-route.gpx';
       const gpx = state.gpxText;
@@ -306,7 +299,7 @@
       catch (e) { setStatus(e.message, true); }
     });
     els.downloadBtn.addEventListener('click', () => {
-      try { if(!state.gpxText) throw new Error('Generate a route first.'); openGpxForIphone(); }
+      try { if(!state.gpxText) throw new Error('Generate a route first.'); downloadGpx(); }
       catch (e) { setStatus(e.message, true); }
     });
 
